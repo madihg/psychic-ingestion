@@ -14,36 +14,54 @@ module.exports = (req, res) => {
     return;
   }
 
+  // Parse JSON body for POST requests
   if (req.method === 'POST') {
-    try {
-      const { userId } = req.body;
-      
-      if (!userId) {
-        return res.status(400).json({ error: 'User ID is required' });
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(body);
+        handleHeartbeat(req, res);
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        res.status(400).json({ error: 'Invalid JSON' });
       }
-
-      // Update user's last seen timestamp
-      activeUsers.set(userId, Date.now());
-      
-      // Clean up inactive users (haven't been seen in 2 minutes)
-      const twoMinutesAgo = Date.now() - (2 * 60 * 1000);
-      for (const [id, lastSeen] of activeUsers.entries()) {
-        if (lastSeen < twoMinutesAgo) {
-          activeUsers.delete(id);
-        }
-      }
-      
-      console.log('Active users:', activeUsers.size);
-      
-      res.status(200).json({ 
-        success: true, 
-        activeUsers: activeUsers.size 
-      });
-    } catch (error) {
-      console.error('Error in heartbeat:', error);
-      res.status(500).json({ error: 'Failed to process heartbeat' });
-    }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    });
+    return;
   }
+
+  res.status(405).json({ error: 'Method not allowed' });
 };
+
+function handleHeartbeat(req, res) {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    // Update user's last seen timestamp
+    activeUsers.set(userId, Date.now());
+    
+    // Clean up inactive users (haven't been seen in 2 minutes)
+    const twoMinutesAgo = Date.now() - (2 * 60 * 1000);
+    for (const [id, lastSeen] of activeUsers.entries()) {
+      if (lastSeen < twoMinutesAgo) {
+        activeUsers.delete(id);
+      }
+    }
+    
+    console.log('Active users:', activeUsers.size);
+    
+    res.status(200).json({ 
+      success: true, 
+      activeUsers: activeUsers.size 
+    });
+  } catch (error) {
+    console.error('Error in heartbeat:', error);
+    res.status(500).json({ error: 'Failed to process heartbeat' });
+  }
+}

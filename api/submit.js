@@ -17,6 +17,28 @@ module.exports = (req, res) => {
     return;
   }
 
+  // Parse JSON body for POST requests
+  if (req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(body);
+        handleRequest(req, res);
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        res.status(400).json({ error: 'Invalid JSON' });
+      }
+    });
+    return;
+  }
+
+  handleRequest(req, res);
+};
+
+function handleRequest(req, res) {
   if (req.method === 'POST') {
     console.log('Handling POST request');
     console.log('Request body:', req.body);
@@ -97,4 +119,4 @@ module.exports = (req, res) => {
     console.log('Method not allowed:', req.method);
     res.status(405).json({ error: 'Method not allowed' });
   }
-};
+}
