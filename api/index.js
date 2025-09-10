@@ -1,12 +1,20 @@
 const express = require("express");
+const path = require("path");
+
 const app = express();
 
-// Serve static files from 'public' directory
-app.use(express.static("public"));
+// Serve static files from public directory
+app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Serve the main page at root
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/../public/index.html");
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
+
+// Serve client.js with proper content type
+app.get("/public/client.js", (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.sendFile(path.join(__dirname, "../public/client.js"));
 });
 
 // For local development
