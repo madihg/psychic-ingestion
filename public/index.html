@@ -2,42 +2,165 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>How Do You Home?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychic ingestion</title>
     <style>
       body {
         padding: 20px;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 0 auto;
       }
+      
+      h1 {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        margin-bottom: 10px;
+        font-weight: normal;
+      }
+      
+      h3 {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        margin-bottom: 30px;
+        color: #666;
+        font-weight: normal;
+        font-style: italic;
+      }
+      
+      .italic {
+        font-style: italic;
+      }
+      
+      #inputContainer {
+        margin-bottom: 30px;
+      }
+      
+      input[type="text"] {
+        width: 100%;
+        max-width: 500px;
+        padding: 12px;
+        font-size: clamp(1rem, 3vw, 1.1rem);
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-family: 'Times New Roman', serif;
+        margin-right: 10px;
+      }
+      
+      button {
+        padding: 12px 20px;
+        font-size: clamp(1rem, 3vw, 1.1rem);
+        background: #000;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Times New Roman', serif;
+      }
+      
+      button:hover {
+        background: #333;
+      }
+      
       #submissions {
         margin-top: 20px;
       }
+      
+      .submission {
+        margin: 15px 0;
+        padding: 15px;
+        background: white;
+        color: black;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-family: 'Times New Roman', serif;
+        font-size: clamp(1rem, 3vw, 1.1rem);
+        line-height: 1.5;
+      }
+      
       #textInputContainer {
-        position: fixed; /* Use fixed positioning for constant location */
-        bottom: 10px; /* Adjust vertical position from bottom */
-        left: 10px; /* Adjust horizontal position from left */
-        display: flex; /* Arrange elements horizontally */
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        display: flex;
+        align-items: center;
         z-index: 10;
       }
+      
       #userCount {
         display: inline-block;
         color: white;
-        background: rgba(0, 0, 0, 0.5);
-        padding: 5px;
-        border-radius: 5px;
-        margin-right: 5px; /* Add spacing between elements */
+        background: rgba(0, 0, 0, 0.7);
+        padding: 8px 12px;
+        border-radius: 20px;
+        margin-right: 10px;
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+        font-family: 'Times New Roman', serif;
+      }
+      
+      #copyButton {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: background 0.3s ease;
+      }
+      
+      #copyButton:hover {
+        background: rgba(0, 0, 0, 0.9);
+      }
+      
+      .copy-success {
+        background: rgba(76, 175, 80, 0.9) !important;
+      }
+      
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+        
+        #inputContainer {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        
+        input[type="text"] {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+        
+        #textInputContainer {
+          position: relative;
+          bottom: auto;
+          left: auto;
+          margin-top: 20px;
+          justify-content: center;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Something you remember</h1>
-    <input type="text" id="userInput" placeholder="Enter your sentence" />
-    <button onclick="submitSentence()">Enter</button>
+    <h1>The earliest <span class="italic">thing</span> I can remember</h1>
+    <h3>Share your memory in this format: "I was X years old. I remember a scent / a sight / an event..."</h3>
+    
+    <div id="inputContainer">
+      <input type="text" id="userInput" placeholder="Enter your memory..." />
+      <button onclick="submitSentence()">Enter</button>
+    </div>
 
     <div id="submissions"></div>
     <div id="textInputContainer">
       <div id="userCount">Loading...</div>
+      <button id="copyButton" onclick="copyAllContent()" title="Copy all memories">📋</button>
     </div>
 
-
-    <script src="/public/client.js"></script>
+    <script src="client.js"></script>
   </body>
 </html>

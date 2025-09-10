@@ -69,24 +69,17 @@ function displaySubmissions() {
     submissionsDiv.innerHTML = ''; // Clear existing
     
     submissions.forEach(submission => {
-    const sentenceDiv = document.createElement('div');
+        const sentenceDiv = document.createElement('div');
+        sentenceDiv.className = 'submission';
         sentenceDiv.textContent = submission.text;
-        sentenceDiv.style.margin = '10px 0';
-        sentenceDiv.style.padding = '10px';
-        sentenceDiv.style.backgroundColor = 'white';
-        sentenceDiv.style.color = 'black';
-        sentenceDiv.style.borderRadius = '5px';
-        sentenceDiv.style.border = '1px solid #ddd';
-        sentenceDiv.style.fontFamily = 'Times New Roman, serif';
-        sentenceDiv.style.fontSize = '16px';
-    submissionsDiv.appendChild(sentenceDiv);
-});
+        submissionsDiv.appendChild(sentenceDiv);
+    });
 }
 
 function updateUserCount(count) {
     const userCountElement = document.getElementById('userCount');
     if (userCountElement) {
-        userCountElement.textContent = `${count} people embedding semblances of certainty`;
+        userCountElement.textContent = `${count} people embedding memories`;
     }
 }
 
@@ -103,6 +96,38 @@ async function sendHeartbeat() {
     } catch (error) {
         console.error('Error sending heartbeat:', error);
     }
+}
+
+// Copy all content function
+function copyAllContent() {
+    const submissionsDiv = document.getElementById('submissions');
+    const submissions = submissionsDiv.querySelectorAll('.submission');
+    
+    if (submissions.length === 0) {
+        alert('No memories to copy yet.');
+        return;
+    }
+    
+    let allText = 'The earliest thing I can remember\n\n';
+    submissions.forEach((submission, index) => {
+        allText += `${index + 1}. ${submission.textContent}\n`;
+    });
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(allText).then(() => {
+        const copyButton = document.getElementById('copyButton');
+        const originalText = copyButton.innerHTML;
+        copyButton.innerHTML = '✓';
+        copyButton.classList.add('copy-success');
+        
+        setTimeout(() => {
+            copyButton.innerHTML = originalText;
+            copyButton.classList.remove('copy-success');
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy. Please try again.');
+    });
 }
 
 // Load submissions when page loads
