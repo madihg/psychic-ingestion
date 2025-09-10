@@ -70,8 +70,15 @@ function displaySubmissions() {
     
     submissions.forEach(submission => {
         const sentenceDiv = document.createElement('div');
-        sentenceDiv.className = 'submission';
         sentenceDiv.textContent = submission.text;
+        sentenceDiv.style.margin = '10px 0';
+        sentenceDiv.style.padding = '10px';
+        sentenceDiv.style.backgroundColor = 'white';
+        sentenceDiv.style.color = 'black';
+        sentenceDiv.style.borderRadius = '5px';
+        sentenceDiv.style.border = '1px solid #ddd';
+        sentenceDiv.style.fontFamily = 'Times New Roman, serif';
+        sentenceDiv.style.fontSize = '16px';
         submissionsDiv.appendChild(sentenceDiv);
     });
 }
@@ -101,7 +108,7 @@ async function sendHeartbeat() {
 // Copy all content function
 function copyAllContent() {
     const submissionsDiv = document.getElementById('submissions');
-    const submissionElements = submissionsDiv.querySelectorAll('.submission');
+    const submissionElements = submissionsDiv.children;
     
     if (submissionElements.length === 0) {
         alert('No memories to copy yet.');
@@ -109,7 +116,7 @@ function copyAllContent() {
     }
     
     let allText = 'The earliest thing I can remember\n\n';
-    submissionElements.forEach((submission, index) => {
+    Array.from(submissionElements).forEach((submission, index) => {
         allText += `${index + 1}. ${submission.textContent}\n`;
     });
     
