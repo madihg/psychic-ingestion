@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Do You Home - Line Dropper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 200px;
+            word-wrap: break-word;
+            user-select: none;
+        }
+
+        .line:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .line.editing {
+            background: rgba(255, 255, 255, 1);
+            border: 2px solid #667eea;
+        }
+
+        .line input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            color: #333;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+
+        .controls h3 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .user-count {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            max-width: 300px;
+            z-index: 1000;
+        }
+
+        .instructions h4 {
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 4px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .instructions li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+
+        .color-picker {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+
+        .color-picker h4 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .color-option:hover,
+        .color-option.active {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .connection-status.connected {
+            background: rgba(76, 175, 80, 0.9);
+        }
+
+        .connection-status.disconnected {
+            background: rgba(244, 67, 54, 0.9);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .line.new {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .line.deleting {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <!-- Lines will be dynamically added here -->
+    </div>
+
+    <div class="controls">
+        <h3>How Do You Home?</h3>
+        <div class="user-count" id="userCount">0 users online</div>
+    </div>
+
+    <div class="color-picker">
+        <h4>Text Color</h4>
+        <div class="color-options">
+            <div class="color-option active" data-color="#000000" style="background: #000000;"></div>
+            <div class="color-option" data-color="#FF6B6B" style="background: #FF6B6B;"></div>
+            <div class="color-option" data-color="#4ECDC4" style="background: #4ECDC4;"></div>
+            <div class="color-option" data-color="#45B7D1" style="background: #45B7D1;"></div>
+            <div class="color-option" data-color="#96CEB4" style="background: #96CEB4;"></div>
+            <div class="color-option" data-color="#FFEAA7" style="background: #FFEAA7;"></div>
+            <div class="color-option" data-color="#DDA0DD" style="background: #DDA0DD;"></div>
+            <div class="color-option" data-color="#98D8C8" style="background: #98D8C8;"></div>
+        </div>
+    </div>
+
+    <div class="connection-status" id="connectionStatus">Connecting...</div>
+
+    <div class="instructions">
+        <h4>How to use:</h4>
+        <ul>
+            <li>Click anywhere to drop a line</li>
+            <li>Double-click a line to edit it</li>
+            <li>Right-click a line to delete it</li>
+            <li>Choose colors from the palette</li>
+            <li>See others' lines in real-time</li>
+        </ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        class LineDropper {
+            constructor() {
+                this.socket = io();
+                this.selectedColor = '#000000';
+                this.editingLine = null;
+                this.container = document.getElementById('container');
+                this.userCountEl = document.getElementById('userCount');
+                this.connectionStatus = document.getElementById('connectionStatus');
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupSocketListeners();
+                this.setupColorPicker();
+            }
+
+            setupEventListeners() {
+                // Click to drop line
+                this.container.addEventListener('click', (e) => {
+                    if (e.target === this.container) {
+                        this.dropLine(e.clientX, e.clientY);
+                    }
+                });
+
+                // Prevent context menu on container
+                this.container.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                });
+            }
+
+            setupSocketListeners() {
+                this.socket.on('connect', () => {
+                    this.connectionStatus.textContent = 'Connected';
+                    this.connectionStatus.className = 'connection-status connected';
+                });
+
+                this.socket.on('disconnect', () => {
+                    this.connectionStatus.textContent = 'Disconnected';
+                    this.connectionStatus.className = 'connection-status disconnected';
+                });
+
+                this.socket.on('userCount', (count) => {
+                    this.userCountEl.textContent = `${count} user${count !== 1 ? 's' : ''} online`;
+                });
+
+                this.socket.on('initialLines', (lines) => {
+                    lines.forEach(line => this.displayLine(line));
+                });
+
+                this.socket.on('newLine', (line) => {
+                    this.displayLine(line, true);
+                });
+
+                this.socket.on('lineUpdated', (data) => {
+                    const lineEl = document.getElementById(`line-${data.id}`);
+                    if (lineEl) {
+                        lineEl.querySelector('.line-text').textContent = data.text;
+                    }
+                });
+
+                this.socket.on('lineDeleted', (lineId) => {
+                    const lineEl = document.getElementById(`line-${lineId}`);
+                    if (lineEl) {
+                        lineEl.classList.add('deleting');
+                        setTimeout(() => lineEl.remove(), 300);
+                    }
+                });
+
+                this.socket.on('lineDropped', (line) => {
+                    // Confirmation that our line was dropped
+                    console.log('Line dropped:', line);
+                });
+            }
+
+            setupColorPicker() {
+                const colorOptions = document.querySelectorAll('.color-option');
+                colorOptions.forEach(option => {
+                    option.addEventListener('click', () => {
+                        colorOptions.forEach(opt => opt.classList.remove('active'));
+                        option.classList.add('active');
+                        this.selectedColor = option.dataset.color;
+                    });
+                });
+            }
+
+            dropLine(x, y) {
+                const text = prompt('What do you want to say?');
+                if (text && text.trim()) {
+                    const lineData = {
+                        x: x,
+                        y: y,
+                        text: text.trim(),
+                        color: this.selectedColor
+                    };
+                    
+                    this.socket.emit('dropLine', lineData);
+                }
+            }
+
+            displayLine(line, isNew = false) {
+                const lineEl = document.createElement('div');
+                lineEl.className = `line ${isNew ? 'new' : ''}`;
+                lineEl.id = `line-${line.id}`;
+                lineEl.style.left = `${line.x}px`;
+                lineEl.style.top = `${line.y}px`;
+                lineEl.style.color = line.color;
+                
+                const textEl = document.createElement('span');
+                textEl.className = 'line-text';
+                textEl.textContent = line.text;
+                lineEl.appendChild(textEl);
+
+                // Double-click to edit
+                lineEl.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    this.editLine(lineEl, line.id);
+                });
+
+                // Right-click to delete
+                lineEl.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.deleteLine(line.id);
+                });
+
+                this.container.appendChild(lineEl);
+            }
+
+            editLine(lineEl, lineId) {
+                const textEl = lineEl.querySelector('.line-text');
+                const currentText = textEl.textContent;
+                
+                lineEl.classList.add('editing');
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentText;
+                input.style.color = lineEl.style.color;
+                
+                textEl.style.display = 'none';
+                lineEl.appendChild(input);
+                input.focus();
+                input.select();
+
+                const finishEdit = () => {
+                    const newText = input.value.trim();
+                    if (newText && newText !== currentText) {
+                        this.socket.emit('updateLineText', {
+                            id: lineId,
+                            text: newText
+                        });
+                    }
+                    
+                    textEl.textContent = newText || currentText;
+                    textEl.style.display = '';
+                    input.remove();
+                    lineEl.classList.remove('editing');
+                };
+
+                input.addEventListener('blur', finishEdit);
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        finishEdit();
+                    }
+                });
+            }
+
+            deleteLine(lineId) {
+                if (confirm('Are you sure you want to delete this line?')) {
+                    this.socket.emit('deleteLine', lineId);
+                }
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new LineDropper();
+        });
+    </script>
+</body>
+</html>
