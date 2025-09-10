@@ -1,25 +1,22 @@
-# How Do You Home - Line Dropper
+# How Do You Home? - Psychic Ingestion
 
-A real-time collaborative line dropping application inspired by the elo-2025 project. Users can drop text lines anywhere on the screen and see others' lines in real-time.
+A real-time collaborative text submission application inspired by the elo-2025 project. Users can submit sentences that appear in real-time for all participants to see.
 
 ## Features
 
-- **Real-time Collaboration**: See other users' lines appear instantly
-- **Interactive Interface**: Click anywhere to drop a line
-- **Line Editing**: Double-click any line to edit its text
-- **Line Deletion**: Right-click any line to delete it
-- **Color Selection**: Choose from 8 different text colors
-- **User Count**: See how many users are currently online
-- **Connection Status**: Visual indicator of connection state
+- **Real-time Collaboration**: See other users' submissions appear instantly
+- **Simple Interface**: Clean, minimal design focused on text submission
+- **Live User Count**: See how many people are currently active
+- **Persistent Storage**: Submissions are stored in memory during session
+- **Heartbeat System**: Tracks active users with automatic cleanup
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## How to Use
 
-1. **Drop a Line**: Click anywhere on the screen and enter your text
-2. **Edit a Line**: Double-click any line to modify its text
-3. **Delete a Line**: Right-click any line to remove it
-4. **Change Colors**: Use the color picker in the top-right corner
-5. **Real-time Updates**: Watch as other users' lines appear instantly
+1. **Submit a Sentence**: Type your text in the input field and click "Enter"
+2. **View Submissions**: See all submitted sentences displayed below
+3. **Real-time Updates**: Watch as new submissions appear automatically
+4. **User Tracking**: See how many people are currently active
 
 ## Local Development
 
@@ -37,30 +34,7 @@ A real-time collaborative line dropping application inspired by the elo-2025 pro
 
 ## Deployment to Vercel
 
-### Option 1: Deploy with Socket.IO (Recommended for Real-time Features)
-
-Since Vercel's serverless functions don't support WebSocket connections, you'll need to deploy the Socket.IO server separately:
-
-1. **Deploy Socket.IO Server to Railway/Heroku**:
-   - Create a new Railway or Heroku app
-   - Deploy the `api/index.js` file as a standalone server
-   - Note the deployed URL (e.g., `https://your-app.railway.app`)
-
-2. **Update Frontend Connection**:
-   - Modify the Socket.IO connection in `public/index.html`:
-   ```javascript
-   this.socket = io('https://your-app.railway.app');
-   ```
-
-3. **Deploy Frontend to Vercel**:
-   ```bash
-   npm install -g vercel
-   vercel
-   ```
-
-### Option 2: Deploy Everything to Vercel (Limited Real-time Features)
-
-For a simpler deployment without real-time features:
+This application is fully compatible with Vercel's serverless architecture:
 
 1. Install Vercel CLI:
    ```bash
@@ -72,15 +46,18 @@ For a simpler deployment without real-time features:
    vercel
    ```
 
-**Note**: This approach will work for the basic interface but won't have real-time collaboration features due to Vercel's serverless limitations.
+The application uses API-based real-time updates instead of WebSockets, making it perfect for Vercel deployment.
 
 ## Project Structure
 
 ```
 ├── api/
-│   └── index.js          # Express server with Socket.IO
+│   ├── index.js          # Main Express server
+│   ├── submit.js         # Submit/get submissions API
+│   └── heartbeat.js      # User heartbeat tracking API
 ├── public/
-│   └── index.html        # Frontend application
+│   ├── index.html        # Main application page
+│   └── client.js         # Frontend JavaScript
 ├── package.json          # Dependencies and scripts
 ├── vercel.json          # Vercel deployment configuration
 └── README.md            # This file
@@ -88,11 +65,18 @@ For a simpler deployment without real-time features:
 
 ## Technical Details
 
-- **Backend**: Express.js with Socket.IO for real-time communication
-- **Frontend**: Vanilla JavaScript with modern CSS
-- **Real-time**: WebSocket connections for instant updates
-- **Storage**: In-memory storage (lines reset on server restart)
-- **Styling**: CSS Grid and Flexbox with backdrop filters
+- **Backend**: Express.js with serverless API endpoints
+- **Frontend**: Vanilla JavaScript with polling for real-time updates
+- **Real-time**: Polling-based updates every 3 seconds
+- **Storage**: In-memory storage (submissions reset on server restart)
+- **User Tracking**: Heartbeat system with 2-minute timeout
+- **Styling**: Clean, minimal CSS with Times New Roman font
+
+## API Endpoints
+
+- `GET /api/submit` - Retrieve all submissions
+- `POST /api/submit` - Submit a new sentence
+- `POST /api/heartbeat` - Update user activity status
 
 ## Environment Variables
 
