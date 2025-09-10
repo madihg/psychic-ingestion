@@ -2,125 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Psychic Ingestion</title>
+    <title>How Do You Home?</title>
     <style>
       body {
         padding: 20px;
-        font-family: 'Times New Roman', serif;
-        line-height: 1.6;
-        max-width: 800px;
-        margin: 0 auto;
       }
-      
-      h1 {
-        font-size: clamp(1.5rem, 4vw, 2.5rem);
-        margin-bottom: 10px;
-        font-weight: normal;
-      }
-      
-      h3 {
-        font-size: clamp(1rem, 3vw, 1.3rem);
-        margin-bottom: 30px;
-        color: #666;
-        font-weight: normal;
-        font-style: italic;
-      }
-      
-      #userInput {
-        width: 100%;
-        max-width: 500px;
-        padding: 12px;
-        font-size: clamp(14px, 3vw, 16px);
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        font-family: 'Times New Roman', serif;
-      }
-      
-      button {
-        padding: 12px 24px;
-        font-size: clamp(14px, 3vw, 16px);
-        background: #000;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-family: 'Times New Roman', serif;
-        margin-bottom: 20px;
-      }
-      
-      button:hover {
-        background: #333;
-      }
-      
       #submissions {
         margin-top: 20px;
       }
-      
-      .submission {
-        margin: 15px 0;
-        padding: 15px;
-        background: white;
-        color: black;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        font-family: 'Times New Roman', serif;
-        font-size: clamp(14px, 3vw, 16px);
-        line-height: 1.5;
-      }
-      
       #textInputContainer {
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
-        display: flex;
+        position: fixed; /* Use fixed positioning for constant location */
+        bottom: 10px; /* Adjust vertical position from bottom */
+        left: 10px; /* Adjust horizontal position from left */
+        display: flex; /* Arrange elements horizontally */
         z-index: 10;
       }
-      
       #userCount {
         display: inline-block;
         color: white;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
         border-radius: 5px;
-        margin-right: 5px;
-        font-size: clamp(12px, 2.5vw, 14px);
-        font-family: 'Times New Roman', serif;
-      }
-      
-      /* Mobile responsiveness */
-      @media (max-width: 768px) {
-        body {
-          padding: 15px;
-        }
-        
-        #textInputContainer {
-          position: relative;
-          bottom: auto;
-          left: auto;
-          margin-top: 20px;
-          justify-content: center;
-        }
-        
-        #userCount {
-          background: rgba(0, 0, 0, 0.8);
-          padding: 6px 10px;
-        }
+        margin-right: 5px; /* Add spacing between elements */
       }
     </style>
   </head>
   <body>
-    <h1>The earliest <em>thing</em> I can remember</h1>
-    <h3>Share your earliest memory in this format: "I was [age] years old. I remember a scent / a sight / an event..."</h3>
-    
-    <input type="text" id="userInput" placeholder="Enter your earliest memory" />
-    <button onclick="submitSentence()">Share Memory</button>
+    <h1>Something you remember</h1>
+    <input type="text" id="userInput" placeholder="Enter your sentence" />
+    <button onclick="submitSentence()">Enter</button>
 
     <div id="submissions"></div>
     <div id="textInputContainer">
       <div id="userCount">Loading...</div>
     </div>
+
 
     <script src="client.js"></script>
   </body>

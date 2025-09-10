@@ -69,17 +69,24 @@ function displaySubmissions() {
     submissionsDiv.innerHTML = ''; // Clear existing
     
     submissions.forEach(submission => {
-        const sentenceDiv = document.createElement('div');
-        sentenceDiv.className = 'submission';
+    const sentenceDiv = document.createElement('div');
         sentenceDiv.textContent = submission.text;
-        submissionsDiv.appendChild(sentenceDiv);
-    });
+        sentenceDiv.style.margin = '10px 0';
+        sentenceDiv.style.padding = '10px';
+        sentenceDiv.style.backgroundColor = 'white';
+        sentenceDiv.style.color = 'black';
+        sentenceDiv.style.borderRadius = '5px';
+        sentenceDiv.style.border = '1px solid #ddd';
+        sentenceDiv.style.fontFamily = 'Times New Roman, serif';
+        sentenceDiv.style.fontSize = '16px';
+    submissionsDiv.appendChild(sentenceDiv);
+});
 }
 
 function updateUserCount(count) {
     const userCountElement = document.getElementById('userCount');
     if (userCountElement) {
-        userCountElement.textContent = `${count} people embedding memories`;
+        userCountElement.textContent = `${count} people embedding semblances of certainty`;
     }
 }
 
