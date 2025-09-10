@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Psychic ingestion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Psychic Ingestion</title>
     <style>
       body {
         padding: 20px;
@@ -20,41 +20,34 @@
       }
       
       h3 {
-        font-size: clamp(1rem, 3vw, 1.2rem);
+        font-size: clamp(1rem, 3vw, 1.3rem);
         margin-bottom: 30px;
         color: #666;
         font-weight: normal;
         font-style: italic;
       }
       
-      .italic {
-        font-style: italic;
-      }
-      
-      #inputContainer {
-        margin-bottom: 30px;
-      }
-      
-      input[type="text"] {
+      #userInput {
         width: 100%;
         max-width: 500px;
         padding: 12px;
-        font-size: clamp(1rem, 3vw, 1.1rem);
+        font-size: clamp(14px, 3vw, 16px);
         border: 1px solid #ddd;
         border-radius: 5px;
+        margin-bottom: 10px;
         font-family: 'Times New Roman', serif;
-        margin-right: 10px;
       }
       
       button {
-        padding: 12px 20px;
-        font-size: clamp(1rem, 3vw, 1.1rem);
+        padding: 12px 24px;
+        font-size: clamp(14px, 3vw, 16px);
         background: #000;
         color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         font-family: 'Times New Roman', serif;
+        margin-bottom: 20px;
       }
       
       button:hover {
@@ -73,7 +66,7 @@
         border-radius: 8px;
         border: 1px solid #ddd;
         font-family: 'Times New Roman', serif;
-        font-size: clamp(1rem, 3vw, 1.1rem);
+        font-size: clamp(14px, 3vw, 16px);
         line-height: 1.5;
       }
       
@@ -82,7 +75,6 @@
         bottom: 10px;
         left: 10px;
         display: flex;
-        align-items: center;
         z-index: 10;
       }
       
@@ -91,49 +83,16 @@
         color: white;
         background: rgba(0, 0, 0, 0.7);
         padding: 8px 12px;
-        border-radius: 20px;
-        margin-right: 10px;
-        font-size: clamp(0.8rem, 2.5vw, 1rem);
+        border-radius: 5px;
+        margin-right: 5px;
+        font-size: clamp(12px, 2.5vw, 14px);
         font-family: 'Times New Roman', serif;
       }
       
-      #copyButton {
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        transition: background 0.3s ease;
-      }
-      
-      #copyButton:hover {
-        background: rgba(0, 0, 0, 0.9);
-      }
-      
-      .copy-success {
-        background: rgba(76, 175, 80, 0.9) !important;
-      }
-      
+      /* Mobile responsiveness */
       @media (max-width: 768px) {
         body {
           padding: 15px;
-        }
-        
-        #inputContainer {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        
-        input[type="text"] {
-          margin-right: 0;
-          margin-bottom: 10px;
         }
         
         #textInputContainer {
@@ -143,22 +102,24 @@
           margin-top: 20px;
           justify-content: center;
         }
+        
+        #userCount {
+          background: rgba(0, 0, 0, 0.8);
+          padding: 6px 10px;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>The earliest <span class="italic">thing</span> I can remember</h1>
-    <h3>Share your memory in this format: "I was X years old. I remember a scent / a sight / an event..."</h3>
+    <h1>The earliest <em>thing</em> I can remember</h1>
+    <h3>Share your earliest memory in this format: "I was [age] years old. I remember a scent / a sight / an event..."</h3>
     
-    <div id="inputContainer">
-      <input type="text" id="userInput" placeholder="Enter your memory..." />
-      <button onclick="submitSentence()">Enter</button>
-    </div>
+    <input type="text" id="userInput" placeholder="Enter your earliest memory" />
+    <button onclick="submitSentence()">Share Memory</button>
 
     <div id="submissions"></div>
     <div id="textInputContainer">
       <div id="userCount">Loading...</div>
-      <button id="copyButton" onclick="copyAllContent()" title="Copy all memories">📋</button>
     </div>
 
     <script src="client.js"></script>
