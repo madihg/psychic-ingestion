@@ -101,15 +101,15 @@ async function sendHeartbeat() {
 // Copy all content function
 function copyAllContent() {
     const submissionsDiv = document.getElementById('submissions');
-    const submissions = submissionsDiv.querySelectorAll('.submission');
+    const submissionElements = submissionsDiv.querySelectorAll('.submission');
     
-    if (submissions.length === 0) {
+    if (submissionElements.length === 0) {
         alert('No memories to copy yet.');
         return;
     }
     
     let allText = 'The earliest thing I can remember\n\n';
-    submissions.forEach((submission, index) => {
+    submissionElements.forEach((submission, index) => {
         allText += `${index + 1}. ${submission.textContent}\n`;
     });
     
